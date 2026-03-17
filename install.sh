@@ -123,12 +123,8 @@ ok "Essential packages complete"
 # ═══════════════════════════════════════════════════════════════
 step "Installing Arch Linux (proot-distro)"
 
-if proot-distro login archlinux -- true 2>/dev/null; then
-  info "Arch Linux is already installed"
-else
-  proot-distro install archlinux
-  ok "Arch Linux installation complete"
-fi
+proot-distro install archlinux 2>/dev/null || info "Arch Linux is already installed"
+ok "Arch Linux ready"
 
 # ═══════════════════════════════════════════════════════════════
 # STEP 4 — Arch init + X11/i3 packages
