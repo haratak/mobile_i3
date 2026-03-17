@@ -610,8 +610,17 @@ arch "
 
 ok "Git config complete"
 
-# Set fish as default shell (must be after all arch() calls)
-arch "chsh -s /usr/bin/fish root 2>/dev/null || true"
+# Launch fish for interactive sessions (without changing login shell)
+# This keeps bash as login shell so proot-distro login + bash -c works
+arch "
+  grep -q 'exec fish' /root/.bashrc 2>/dev/null || cat >> /root/.bashrc << 'BASHRCEOF'
+
+# Switch to fish for interactive sessions
+if [ -t 1 ] && command -v fish >/dev/null 2>&1; then
+  exec fish
+fi
+BASHRCEOF
+"
 
 # ═══════════════════════════════════════════════════════════════
 # STEP 10 — Generate launch scripts
