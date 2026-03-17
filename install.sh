@@ -63,8 +63,14 @@ fail() { echo -e "\n  ${RED}✗ ERROR: $1${RESET}\n"; exit 1; }
 
 # Helper to run commands inside Arch via proot
 arch() {
-  proot-distro login archlinux -- bash -c "$1"
+  proot-distro login archlinux -- /usr/bin/env bash -c "$1"
 }
+
+# Reset login shell to bash in case a previous run changed it to fish
+ARCH_PASSWD="$PREFIX/var/lib/proot-distro/installed-rootfs/archlinux/etc/passwd"
+if [ -f "$ARCH_PASSWD" ]; then
+  sed -i 's|/usr/bin/fish|/bin/bash|g' "$ARCH_PASSWD"
+fi
 
 # ── Preflight ─────────────────────────────────────────────────
 print_banner
