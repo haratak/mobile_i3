@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ============================================================
 #   mobile-i3
-#   Arch Linux + i3wm + Neovim + Catppuccin on Android
-#   No root required.
+#   i3wm + Neovim + Catppuccin on Android (Termux native)
+#   No root required. No proot.
 # ============================================================
 
 set -euo pipefail
@@ -19,7 +19,7 @@ GRAY='\033[38;5;245m'
 PINK='\033[38;5;213m'
 
 # ── Progress ──────────────────────────────────────────────────
-TOTAL_STEPS=10
+TOTAL_STEPS=6
 CURRENT_STEP=0
 START_TIME=$(date +%s)
 
@@ -30,7 +30,7 @@ print_banner() {
   echo '  ║                                                      ║'
   echo '  ║    ✦  mobile-i3                                      ║'
   echo '  ║                                                      ║'
-  echo '  ║    Arch Linux · i3wm · Neovim · Catppuccin Mocha    ║'
+  echo '  ║    i3wm · Neovim · Catppuccin Mocha on Termux       ║'
   echo '  ║                                                      ║'
   echo '  ╚══════════════════════════════════════════════════════╝'
   echo -e "${RESET}"
@@ -61,26 +61,18 @@ info() { echo -e "  ${BLUE}→${RESET} $1"; }
 warn() { echo -e "  ${YELLOW}⚠${RESET} $1"; }
 fail() { echo -e "\n  ${RED}✗ ERROR: $1${RESET}\n"; exit 1; }
 
-# Helper to run commands inside Arch via proot
-arch() {
-  proot-distro login archlinux -- /usr/bin/env bash -c "$1"
-}
-
 # ── Preflight ─────────────────────────────────────────────────
 print_banner
 echo -e "  ${GRAY}Components to install:${RESET}"
 echo ""
-echo -e "  ${MAUVE}・${RESET} Arch Linux          (proot-distro)"
 echo -e "  ${MAUVE}・${RESET} i3wm                (tiling WM / X11)"
 echo -e "  ${MAUVE}・${RESET} Polybar             (status bar)"
 echo -e "  ${MAUVE}・${RESET} Rofi                (app launcher)"
-echo -e "  ${MAUVE}・${RESET} Alacritty           (terminal)"
-echo -e "  ${MAUVE}・${RESET} Neovim + LazyVim    (editor)"
+echo -e "  ${MAUVE}・${RESET} Neovim              (editor)"
 echo -e "  ${MAUVE}・${RESET} Bash + Starship      (shell)"
 echo -e "  ${MAUVE}・${RESET} Catppuccin Mocha     (unified theme)"
-echo -e "  ${MAUVE}・${RESET} Git, Node, Python, Go, Rust (dev tools)"
 echo ""
-echo -e "  ${GRAY}Required space: ~5GB  /  Estimated time: 20-40 min${RESET}"
+echo -e "  ${GRAY}Required space: ~1GB  /  Estimated time: 5-10 min${RESET}"
 echo ""
 
 # Termux-X11 check
@@ -93,156 +85,103 @@ fi
 echo ""
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 1 — Update Termux packages
+# STEP 1 — Update Termux + install x11-repo
 # ═══════════════════════════════════════════════════════════════
 step "Updating Termux packages"
 
 pkg update -y -o Dpkg::Options::="--force-confnew" 2>/dev/null
 pkg upgrade -y -o Dpkg::Options::="--force-confnew" 2>/dev/null
+pkg install -y x11-repo
 ok "Termux update complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 2 — Termux essential packages
-# ═══════════════════════════════════════════════════════════════
-step "Installing Termux essential packages"
-
-pkg install -y \
-  proot-distro \
-  x11-repo \
-  pulseaudio \
-  wget curl git
-ok "Base packages complete"
-
-# x11-repo must be added before termux-x11-nightly is available
-pkg install -y termux-x11-nightly
-ok "Essential packages complete"
-
-# ═══════════════════════════════════════════════════════════════
-# STEP 3 — Install Arch Linux
-# ═══════════════════════════════════════════════════════════════
-step "Installing Arch Linux (proot-distro)"
-
-proot-distro install archlinux 2>/dev/null || info "Arch Linux is already installed"
-ok "Arch Linux ready"
-
-# ═══════════════════════════════════════════════════════════════
-# STEP 4 — Arch init + X11/i3 packages
+# STEP 2 — X11 + i3 packages
 # ═══════════════════════════════════════════════════════════════
 step "Installing X11 environment and i3wm"
 
-arch "
-  pacman-key --init 2>/dev/null || true
-  pacman-key --populate archlinux 2>/dev/null || true
-  pacman -Syu --noconfirm 2>/dev/null || true
-
-  # Set timezone from Android
-  ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime 2>/dev/null || true
-
-  pacman -S --noconfirm --needed \
-    xorg-server \
-    xorg-xinit \
-    xorg-xrandr \
-    xorg-xsetroot \
-    xorg-xrdb \
-    xterm \
-    i3-wm \
-    i3status \
-    i3lock \
-    polybar \
-    rofi \
-    dunst \
-    feh \
-    xclip \
-    xdotool \
-    scrot \
-    autorandr \
-    dbus
-"
-ok "X11 + i3wm installation complete"
+pkg install -y \
+  termux-x11-nightly \
+  pulseaudio \
+  i3 \
+  polybar \
+  rofi \
+  dunst \
+  feh \
+  xorg-xrandr \
+  xclip \
+  dbus
+ok "X11 + i3wm complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 5 — GUI applications
-# ═══════════════════════════════════════════════════════════════
-step "Installing GUI applications"
-
-arch "
-  pacman -S --noconfirm --needed \
-    alacritty \
-    chromium \
-    imv \
-    mpv \
-    evince \
-    pavucontrol \
-    noto-fonts \
-    noto-fonts-emoji \
-    ttf-jetbrains-mono-nerd \
-    ttf-nerd-fonts-symbols
-"
-ok "GUI applications complete"
-
-# ═══════════════════════════════════════════════════════════════
-# STEP 6 — Dev tools
+# STEP 3 — Dev tools
 # ═══════════════════════════════════════════════════════════════
 step "Installing dev tools"
 
-arch "
-  pacman -S --noconfirm --needed \
-    neovim \
-    git \
-    git-delta \
-    lazygit \
-    starship \
-    tmux \
-    zoxide \
-    fzf \
-    ripgrep \
-    fd \
-    bat \
-    eza \
-    htop \
-    btop \
-    fastfetch \
-    base-devel \
-    nodejs \
-    npm \
-    python \
-    python-pip \
-    go \
-    rustup
-"
+pkg install -y \
+  neovim \
+  git \
+  git-delta \
+  lazygit \
+  starship \
+  tmux \
+  zoxide \
+  fzf \
+  ripgrep \
+  fd \
+  bat \
+  eza \
+  htop \
+  fastfetch \
+  nodejs \
+  python \
+  golang \
+  rust
 ok "Dev tools complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 7 — Apply Catppuccin theme
+# STEP 4 — Fonts
+# ═══════════════════════════════════════════════════════════════
+step "Installing fonts"
+
+# Install JetBrains Mono Nerd Font
+FONT_DIR="$HOME/.local/share/fonts"
+mkdir -p "$FONT_DIR"
+if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
+  FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+  curl -sL "$FONT_URL" | tar xJ -C "$FONT_DIR" 2>/dev/null || {
+    warn "Font download failed, using system default"
+  }
+fi
+ok "Fonts complete"
+
+# ═══════════════════════════════════════════════════════════════
+# STEP 5 — Apply Catppuccin theme + configs
 # ═══════════════════════════════════════════════════════════════
 step "Applying Catppuccin Mocha theme"
 
-arch "
 mkdir -p \
-  /root/.config/i3 \
-  /root/.config/polybar \
-  /root/.config/rofi/themes \
-  /root/.config/dunst \
-  /root/.config/alacritty \
-  /root/Pictures/Wallpapers
+  "$HOME/.config/i3" \
+  "$HOME/.config/polybar" \
+  "$HOME/.config/rofi/themes" \
+  "$HOME/.config/dunst"
 
 # ── i3 config ─────────────────────────────────────────────────
-cat > /root/.config/i3/config << 'I3EOF'
-set \$rosewater #f5e0dc
-set \$mauve     #cba6f7
-set \$red       #f38ba8
-set \$green     #a6e3a1
-set \$blue      #89b4fa
-set \$text      #cdd6f4
-set \$subtext0  #a6adc8
-set \$overlay0  #6c7086
-set \$surface1  #45475a
-set \$surface0  #313244
-set \$base      #1e1e2e
+cat > "$HOME/.config/i3/config" << 'I3EOF'
+set $rosewater #f5e0dc
+set $mauve     #cba6f7
+set $red       #f38ba8
+set $green     #a6e3a1
+set $blue      #89b4fa
+set $text      #cdd6f4
+set $subtext0  #a6adc8
+set $overlay0  #6c7086
+set $surface1  #45475a
+set $surface0  #313244
+set $base      #1e1e2e
 
-set \$mod Mod1
-set \$term alacritty
-set \$menu rofi -show drun
+set $mod Mod1
+set $term xterm
+set $menu rofi -show drun
 
 font pango:JetBrainsMono Nerd Font 11
 default_border pixel 2
@@ -250,53 +189,53 @@ default_floating_border pixel 2
 gaps inner 0
 gaps outer 0
 
-client.focused          \$mauve    \$base \$text    \$rosewater \$mauve
-client.focused_inactive \$overlay0 \$base \$text    \$rosewater \$overlay0
-client.unfocused        \$surface1 \$base \$subtext0 \$rosewater \$surface1
-client.urgent           \$red      \$base \$text    \$red       \$red
-client.background       \$base
+client.focused          $mauve    $base $text    $rosewater $mauve
+client.focused_inactive $overlay0 $base $text    $rosewater $overlay0
+client.unfocused        $surface1 $base $subtext0 $rosewater $surface1
+client.urgent           $red      $base $text    $red       $red
+client.background       $base
 
 exec_always --no-startup-id polybar --reload main &
 exec_always --no-startup-id dunst
 
-bindsym \$mod+Return       exec \$term
-bindsym \$mod+space        exec \$menu
-bindsym \$mod+q            kill
-bindsym \$mod+Shift+c      reload
-bindsym \$mod+Shift+r      restart
-bindsym \$mod+Shift+e      exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'
+bindsym $mod+Return       exec $term
+bindsym $mod+space        exec $menu
+bindsym $mod+q            kill
+bindsym $mod+Shift+c      reload
+bindsym $mod+Shift+r      restart
+bindsym $mod+Shift+e      exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'
 
-bindsym \$mod+h focus left
-bindsym \$mod+j focus down
-bindsym \$mod+k focus up
-bindsym \$mod+l focus right
-bindsym \$mod+Shift+h move left
-bindsym \$mod+Shift+j move down
-bindsym \$mod+Shift+k move up
-bindsym \$mod+Shift+l move right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
-bindsym \$mod+b split h
-bindsym \$mod+v split v
-bindsym \$mod+f fullscreen toggle
-bindsym \$mod+Shift+space floating toggle
-bindsym \$mod+a focus parent
+bindsym $mod+b split h
+bindsym $mod+v split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+a focus parent
 
-bindsym \$mod+s layout stacking
-bindsym \$mod+w layout tabbed
-bindsym \$mod+e layout toggle split
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
-bindsym \$mod+1 workspace number 1
-bindsym \$mod+2 workspace number 2
-bindsym \$mod+3 workspace number 3
-bindsym \$mod+4 workspace number 4
-bindsym \$mod+5 workspace number 5
-bindsym \$mod+Shift+1 move container to workspace number 1
-bindsym \$mod+Shift+2 move container to workspace number 2
-bindsym \$mod+Shift+3 move container to workspace number 3
-bindsym \$mod+Shift+4 move container to workspace number 4
-bindsym \$mod+Shift+5 move container to workspace number 5
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
 
-bindsym \$mod+r mode 'resize'
+bindsym $mod+r mode 'resize'
 mode 'resize' {
   bindsym h resize shrink width 10 px or 10 ppt
   bindsym j resize grow height 10 px or 10 ppt
@@ -305,12 +244,10 @@ mode 'resize' {
   bindsym Return mode 'default'
   bindsym Escape mode 'default'
 }
-
-bindsym Print exec --no-startup-id scrot ~/Pictures/screenshot_\$(date +%Y%m%d_%H%M%S).png
 I3EOF
 
 # ── Polybar ───────────────────────────────────────────────────
-cat > /root/.config/polybar/config.ini << 'PBEOF'
+cat > "$HOME/.config/polybar/config.ini" << 'PBEOF'
 [colors]
 base     = #1e1e2e
 surface0 = #313244
@@ -318,153 +255,98 @@ overlay0 = #6c7086
 text     = #cdd6f4
 subtext0 = #a6adc8
 mauve    = #cba6f7
-blue     = #89b4fa
-green    = #a6e3a1
-yellow   = #f9e2af
-red      = #f38ba8
-peach    = #fab387
 teal     = #94e2d5
+peach    = #fab387
 
 [bar/main]
 width            = 100%
 height           = 32
-background       = \${colors.base}
-foreground       = \${colors.text}
+background       = ${colors.base}
+foreground       = ${colors.text}
 line-size        = 2
 padding-left     = 2
 padding-right    = 2
 module-margin    = 1
 separator        = |
-separator-foreground = \${colors.overlay0}
+separator-foreground = ${colors.overlay0}
 font-0           = JetBrainsMono Nerd Font:style=Regular:size=11;2
 modules-left     = i3 xwindow
 modules-center   =
-modules-right    = cpu memory pulseaudio
+modules-right    = cpu memory
 
 [module/i3]
 type                        = internal/i3
 label-focused               = %index%
-label-focused-foreground    = \${colors.mauve}
-label-focused-background    = \${colors.surface0}
+label-focused-foreground    = ${colors.mauve}
+label-focused-background    = ${colors.surface0}
 label-focused-padding       = 2
 label-unfocused             = %index%
-label-unfocused-foreground  = \${colors.overlay0}
+label-unfocused-foreground  = ${colors.overlay0}
 label-unfocused-padding     = 2
-label-urgent                = %index%
-label-urgent-foreground     = \${colors.red}
-label-urgent-padding        = 2
 
 [module/xwindow]
 type            = internal/xwindow
 label           = %title:0:60:...%
-label-foreground = \${colors.subtext0}
+label-foreground = ${colors.subtext0}
 
 [module/cpu]
 type            = internal/cpu
 interval        = 10
 label           = 󰘚 %percentage:2%%
-label-foreground = \${colors.teal}
+label-foreground = ${colors.teal}
 
 [module/memory]
 type            = internal/memory
 interval        = 10
 label           = 󰍛 %percentage_used:2%%
-label-foreground = \${colors.mauve}
-
-[module/pulseaudio]
-type                    = internal/pulseaudio
-label-volume            = 󰕾 %percentage%%
-label-muted             = 󰝟 Muted
-label-volume-foreground = \${colors.peach}
-label-muted-foreground  = \${colors.overlay0}
+label-foreground = ${colors.mauve}
 PBEOF
 
 # ── Rofi ──────────────────────────────────────────────────────
-cat > /root/.config/rofi/themes/catppuccin-mocha.rasi << 'ROFIEOF'
+cat > "$HOME/.config/rofi/themes/catppuccin-mocha.rasi" << 'ROFIEOF'
 * { bg: #1e1e2e; bg-alt: #313244; fg: #cdd6f4; fg-alt: #6c7086; accent: #cba6f7; }
 window { background-color: @bg; border: 2px solid; border-color: @accent; border-radius: 10px; width: 420px; }
 mainbox { background-color: transparent; padding: 12px; }
 inputbar { background-color: @bg-alt; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; children: [prompt,entry]; }
 prompt { text-color: @accent; margin-right: 8px; }
-entry { text-color: @fg; placeholder: 'Search...'; placeholder-color: @fg-alt; }
+entry { text-color: @fg; placeholder: "Search..."; placeholder-color: @fg-alt; }
 listview { background-color: transparent; lines: 8; columns: 1; spacing: 4px; }
 element { background-color: transparent; padding: 8px 12px; border-radius: 6px; }
 element selected { background-color: @bg-alt; text-color: @accent; }
 element-text { text-color: inherit; }
 ROFIEOF
 
-cat > /root/.config/rofi/config.rasi << 'RCEOF'
-configuration { modi: \"drun,run,window\"; font: \"JetBrainsMono Nerd Font 12\"; show-icons: true; }
-@theme \"/root/.config/rofi/themes/catppuccin-mocha.rasi\"
+cat > "$HOME/.config/rofi/config.rasi" << 'RCEOF'
+configuration { modi: "drun,run,window"; font: "JetBrainsMono Nerd Font 12"; show-icons: true; }
+@theme "~/.config/rofi/themes/catppuccin-mocha.rasi"
 RCEOF
 
 # ── Dunst ─────────────────────────────────────────────────────
-cat > /root/.config/dunst/dunstrc << 'DEOF'
+cat > "$HOME/.config/dunst/dunstrc" << 'DEOF'
 [global]
   font             = JetBrainsMono Nerd Font 11
-  frame_color      = #cba6f7
-  background       = #1e1e2e
-  foreground       = #cdd6f4
+  frame_color      = "#cba6f7"
+  background       = "#1e1e2e"
+  foreground       = "#cdd6f4"
   corner_radius    = 8
   padding          = 12
   horizontal_padding = 12
   width            = 320
   offset           = 12x48
 [urgency_normal]
-  frame_color = #89b4fa
+  frame_color = "#89b4fa"
 [urgency_critical]
-  foreground  = #f38ba8
-  frame_color = #f38ba8
+  foreground  = "#f38ba8"
+  frame_color = "#f38ba8"
 DEOF
 
-# ── Alacritty ─────────────────────────────────────────────────
-cat > /root/.config/alacritty/alacritty.toml << 'AEOF'
-[window]
-padding     = { x = 16, y = 12 }
-opacity     = 1.0
-decorations = \"None\"
-
-[font]
-normal = { family = \"JetBrainsMono Nerd Font\", style = \"Regular\" }
-bold   = { family = \"JetBrainsMono Nerd Font\", style = \"Bold\" }
-size   = 13.0
-
-[colors.primary]
-background = \"#1e1e2e\"
-foreground = \"#cdd6f4\"
-
-[colors.cursor]
-cursor = \"#f5e0dc\"
-text   = \"#1e1e2e\"
-
-[colors.normal]
-black   = \"#45475a\"
-red     = \"#f38ba8\"
-green   = \"#a6e3a1\"
-yellow  = \"#f9e2af\"
-blue    = \"#89b4fa\"
-magenta = \"#f5c2e7\"
-cyan    = \"#94e2d5\"
-white   = \"#bac2de\"
-
-[colors.bright]
-black   = \"#585b70\"
-red     = \"#f38ba8\"
-green   = \"#a6e3a1\"
-yellow  = \"#f9e2af\"
-blue    = \"#89b4fa\"
-magenta = \"#f5c2e7\"
-cyan    = \"#94e2d5\"
-white   = \"#a6adc8\"
-AEOF
-
 # ── Bash config ──────────────────────────────────────────────
-cat >> /root/.bashrc << 'BASHRCEOF'
+grep -q 'starship init bash' "$HOME/.bashrc" 2>/dev/null || cat >> "$HOME/.bashrc" << 'BASHRCEOF'
 
 # Starship prompt
-eval \"\$(starship init bash)\"
+eval "$(starship init bash)"
 # Zoxide
-eval \"\$(zoxide init bash)\"
+eval "$(zoxide init bash)"
 # Aliases
 alias ls='eza --icons --group-directories-first'
 alias ll='eza -la --icons --group-directories-first --git'
@@ -474,48 +356,48 @@ alias vim='nvim'
 alias vi='nvim'
 alias g='git'
 alias lg='lazygit'
-fastfetch
 BASHRCEOF
 
 # ── Starship ──────────────────────────────────────────────────
-cat > /root/.config/starship.toml << 'SSEOF'
-format = \"\$username\$directory\$git_branch\$git_status\$cmd_duration\$line_break\$character\"
-palette = \"catppuccin_mocha\"
+mkdir -p "$HOME/.config"
+cat > "$HOME/.config/starship.toml" << 'SSEOF'
+format = "$username$directory$git_branch$git_status$cmd_duration$line_break$character"
+palette = "catppuccin_mocha"
 
 [palettes.catppuccin_mocha]
-mauve = \"#cba6f7\"
-blue  = \"#89b4fa\"
-green = \"#a6e3a1\"
-red   = \"#f38ba8\"
-yellow = \"#f9e2af\"
-text  = \"#cdd6f4\"
+mauve = "#cba6f7"
+blue  = "#89b4fa"
+green = "#a6e3a1"
+red   = "#f38ba8"
+yellow = "#f9e2af"
+text  = "#cdd6f4"
 
 [username]
 show_always = true
-style_user  = \"bold mauve\"
-format      = \"[\$user](\$style) \"
+style_user  = "bold mauve"
+format      = "[$user]($style) "
 
 [directory]
-style            = \"bold blue\"
+style            = "bold blue"
 truncation_length = 3
-format           = \"[\$path](\$style) \"
+format           = "[$path]($style) "
 
 [git_branch]
-symbol = \" \"
-style  = \"bold green\"
-format = \"[\$symbol\$branch](\$style) \"
+symbol = " "
+style  = "bold green"
+format = "[$symbol$branch]($style) "
 
 [git_status]
-style  = \"bold red\"
-format = \"([\$all_status\$ahead_behind](\$style)) \"
+style  = "bold red"
+format = "([$all_status$ahead_behind]($style)) "
 
 [character]
-success_symbol = \"[❯](bold mauve)\"
-error_symbol   = \"[❯](bold red)\"
+success_symbol = "[❯](bold mauve)"
+error_symbol   = "[❯](bold red)"
 SSEOF
 
 # ── tmux ──────────────────────────────────────────────────────
-cat > /root/.tmux.conf << 'TMUXEOF'
+cat > "$HOME/.tmux.conf" << 'TMUXEOF'
 set -g  default-terminal   'tmux-256color'
 set -ag terminal-overrides ',*:Tc'
 set -g  prefix             C-a
@@ -531,54 +413,28 @@ set -g  window-status-current-style 'fg=#cba6f7,bold'
 set -g  pane-active-border-style    'fg=#cba6f7'
 set -g  mode-keys          vi
 TMUXEOF
-"
 
-ok "Theme applied"
+# ── Git config ────────────────────────────────────────────────
+git config --global core.pager       'delta'
+git config --global delta.navigate   true
+git config --global delta.line-numbers true
+git config --global pull.rebase      true
+git config --global init.defaultBranch main
 
-# ═══════════════════════════════════════════════════════════════
-# STEP 8 — LazyVim
-# ═══════════════════════════════════════════════════════════════
-step "Installing Neovim + LazyVim"
-
-arch "
-  rm -rf /root/.config/nvim /root/.local/share/nvim /root/.local/state/nvim /root/.cache/nvim
-  git clone https://github.com/LazyVim/starter /root/.config/nvim --depth=1
-  rm -rf /root/.config/nvim/.git
-  nvim --headless '+Lazy! sync' +qa 2>/dev/null || true
-"
-
-ok "LazyVim complete"
+ok "Theme and configs applied"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 9 — Git config
-# ═══════════════════════════════════════════════════════════════
-step "Configuring Git / dev environment"
-
-arch "
-  git config --global core.pager       'delta'
-  git config --global delta.navigate   true
-  git config --global delta.line-numbers true
-  git config --global pull.rebase      true
-  git config --global init.defaultBranch main
-  git config --global alias.st  status
-  git config --global alias.co  checkout
-  git config --global alias.lg  'log --oneline --graph --decorate'
-"
-
-ok "Git config complete"
-
-# ═══════════════════════════════════════════════════════════════
-# STEP 10 — Generate launch scripts
+# STEP 6 — Generate launch scripts
 # ═══════════════════════════════════════════════════════════════
 step "Generating launch scripts"
 
-cat > ~/start-i3.sh << 'STARTEOF'
+cat > "$HOME/start-i3.sh" << 'STARTEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 echo "  ✦ Starting mobile-i3..."
 
 export XDG_RUNTIME_DIR="${TMPDIR}"
 
-# PulseAudio (audio)
+# PulseAudio
 pulseaudio --start \
   --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" \
   --exit-idle-time=-1 2>/dev/null || true
@@ -590,38 +446,28 @@ sleep 2
 echo "  → Please open the Termux-X11 app"
 echo ""
 
-# Start i3 inside proot (--shared-tmp shares Wayland socket)
-DISPLAY=:1 \
-PULSE_SERVER=127.0.0.1 \
-proot-distro login archlinux --shared-tmp -- bash -c "
-  export DISPLAY=:1
-  export PULSE_SERVER=127.0.0.1
-  export XDG_RUNTIME_DIR=/tmp
-  # Auto-detect and set screen resolution
-  SCREEN_RES=\$(xrandr 2>/dev/null | grep ' connected' | grep -oP '\\d+x\\d+' | head -1)
-  if [ -n \"\$SCREEN_RES\" ]; then
-    xrandr --output \$(xrandr | grep ' connected' | awk '{print \$1}') --mode \"\$SCREEN_RES\" 2>/dev/null || true
-  fi
-  eval \$(dbus-launch --sh-syntax 2>/dev/null) || true
-  exec i3
-"
-STARTEOF
-chmod +x ~/start-i3.sh
+export DISPLAY=:1
 
-cat > ~/stop-i3.sh << 'STOPEOF'
+# Auto-detect screen resolution
+SCREEN_RES=$(xrandr 2>/dev/null | grep ' connected' | grep -oP '\d+x\d+' | head -1)
+if [ -n "$SCREEN_RES" ]; then
+  xrandr --output $(xrandr | grep ' connected' | awk '{print $1}') --mode "$SCREEN_RES" 2>/dev/null || true
+fi
+
+eval $(dbus-launch --sh-syntax 2>/dev/null) || true
+exec i3
+STARTEOF
+chmod +x "$HOME/start-i3.sh"
+
+cat > "$HOME/stop-i3.sh" << 'STOPEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 pkill -f "i3"         2>/dev/null || true
+pkill -f "polybar"    2>/dev/null || true
 pkill -f "termux-x11" 2>/dev/null || true
 pulseaudio --kill      2>/dev/null || true
 echo "  ✦ mobile-i3 stopped"
 STOPEOF
-chmod +x ~/stop-i3.sh
-
-cat > ~/arch-shell.sh << 'SHELLEOF'
-#!/data/data/com.termux/files/usr/bin/bash
-exec proot-distro login archlinux --shared-tmp -- bash
-SHELLEOF
-chmod +x ~/arch-shell.sh
+chmod +x "$HOME/stop-i3.sh"
 
 ok "Launch scripts generated"
 
@@ -638,23 +484,18 @@ echo -e "  ${GREEN}${BOLD}✦ Installation complete! (${MINS}m ${SECS}s)${RESET}
 echo -e "${GRAY}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Usage:${RESET}"
-echo -e "  ${BLUE}bash ~/start-i3.sh${RESET}   Start desktop"
-echo -e "  ${BLUE}bash ~/arch-shell.sh${RESET}   Arch / Bash shell"
-echo -e "  ${BLUE}bash ~/stop-i3.sh${RESET}    Stop"
-echo ""
-echo -e "  ${MAUVE}${BOLD}Setup Git (run in Arch shell):${RESET}"
-echo -e "  ${GRAY}git config --global user.name  \"Your Name\"${RESET}"
-echo -e "  ${GRAY}git config --global user.email \"you@example.com\"${RESET}"
+echo -e "  ${BLUE}bash ~/start-i3.sh${RESET}      Start desktop"
+echo -e "  ${BLUE}bash ~/stop-i3.sh${RESET}       Stop"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Keybindings (i3wm):${RESET}"
-echo -e "  ${GRAY}Super + Enter${RESET}            Terminal (Alacritty)"
-echo -e "  ${GRAY}Super + Space${RESET}            Launcher (Rofi)"
-echo -e "  ${GRAY}Super + Q${RESET}                Close window"
-echo -e "  ${GRAY}Super + H/J/K/L${RESET}          Focus navigation"
-echo -e "  ${GRAY}Super + Shift+H/J/K/L${RESET}    Move window"
-echo -e "  ${GRAY}Super + 1-5${RESET}              Switch workspace"
-echo -e "  ${GRAY}Super + F${RESET}                Fullscreen"
-echo -e "  ${GRAY}Super + R${RESET}                Resize mode"
+echo -e "  ${GRAY}Alt + Enter${RESET}              Terminal"
+echo -e "  ${GRAY}Alt + Space${RESET}              Launcher (Rofi)"
+echo -e "  ${GRAY}Alt + Q${RESET}                  Close window"
+echo -e "  ${GRAY}Alt + H/J/K/L${RESET}            Focus navigation"
+echo -e "  ${GRAY}Alt + Shift+H/J/K/L${RESET}      Move window"
+echo -e "  ${GRAY}Alt + 1-5${RESET}                Switch workspace"
+echo -e "  ${GRAY}Alt + F${RESET}                  Fullscreen"
+echo -e "  ${GRAY}Alt + R${RESET}                  Resize mode"
 echo ""
-echo -e "  ${PINK}✦ Beautiful Arch Linux on your Android. Enjoy!${RESET}"
+echo -e "  ${PINK}✦ i3wm on your Android. Enjoy!${RESET}"
 echo ""
