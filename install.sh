@@ -151,7 +151,6 @@ arch "
     polybar \
     rofi \
     dunst \
-    picom \
     feh \
     xclip \
     xdotool \
@@ -225,7 +224,6 @@ mkdir -p \
   /root/.config/rofi/themes \
   /root/.config/dunst \
   /root/.config/alacritty \
-  /root/.config/picom \
   /root/Pictures/Wallpapers
 
 # ── i3 config ─────────────────────────────────────────────────
@@ -249,10 +247,8 @@ set \$menu rofi -show drun
 font pango:JetBrainsMono Nerd Font 11
 default_border pixel 2
 default_floating_border pixel 2
-gaps inner 10
-gaps outer 4
-smart_gaps on
-smart_borders on
+gaps inner 0
+gaps outer 0
 
 client.focused          \$mauve    \$base \$text    \$rosewater \$mauve
 client.focused_inactive \$overlay0 \$base \$text    \$rosewater \$overlay0
@@ -261,9 +257,7 @@ client.urgent           \$red      \$base \$text    \$red       \$red
 client.background       \$base
 
 exec_always --no-startup-id polybar --reload main &
-exec_always --no-startup-id picom --daemon
 exec_always --no-startup-id dunst
-exec --no-startup-id feh --bg-fill ~/Pictures/Wallpapers/wallpaper.png
 
 bindsym \$mod+Return       exec \$term
 bindsym \$mod+space        exec \$menu
@@ -344,7 +338,7 @@ separator        = |
 separator-foreground = \${colors.overlay0}
 font-0           = JetBrainsMono Nerd Font:style=Regular:size=11;2
 modules-left     = i3 xwindow
-modules-center   = date
+modules-center   =
 modules-right    = cpu memory pulseaudio
 
 [module/i3]
@@ -365,23 +359,15 @@ type            = internal/xwindow
 label           = %title:0:60:...%
 label-foreground = \${colors.subtext0}
 
-[module/date]
-type            = internal/date
-interval        = 1
-date            = %H:%M
-date-alt        = %Y-%m-%d %H:%M:%S
-label           = 󰥔 %date%
-label-foreground = \${colors.blue}
-
 [module/cpu]
 type            = internal/cpu
-interval        = 2
+interval        = 10
 label           = 󰘚 %percentage:2%%
 label-foreground = \${colors.teal}
 
 [module/memory]
 type            = internal/memory
-interval        = 2
+interval        = 10
 label           = 󰍛 %percentage_used:2%%
 label-foreground = \${colors.mauve}
 
@@ -431,25 +417,11 @@ cat > /root/.config/dunst/dunstrc << 'DEOF'
   frame_color = #f38ba8
 DEOF
 
-# ── Picom ─────────────────────────────────────────────────────
-cat > /root/.config/picom/picom.conf << 'PCEOF'
-backend = \"glx\";
-vsync = true;
-corner-radius = 10;
-shadow = true;
-shadow-radius = 12;
-shadow-opacity = 0.5;
-fading = true;
-fade-in-step = 0.03;
-fade-out-step = 0.03;
-opacity-rule = [ \"92:class_g = 'Alacritty'\" ];
-PCEOF
-
 # ── Alacritty ─────────────────────────────────────────────────
 cat > /root/.config/alacritty/alacritty.toml << 'AEOF'
 [window]
 padding     = { x = 16, y = 12 }
-opacity     = 0.95
+opacity     = 1.0
 decorations = \"None\"
 
 [font]
