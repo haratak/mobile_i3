@@ -135,6 +135,9 @@ arch "
   pacman-key --populate archlinux 2>/dev/null || true
   pacman -Syu --noconfirm 2>/dev/null || true
 
+  # Set timezone from Android
+  ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime 2>/dev/null || true
+
   pacman -S --noconfirm --needed \
     xorg-server \
     xorg-xinit \
@@ -342,7 +345,7 @@ separator-foreground = \${colors.overlay0}
 font-0           = JetBrainsMono Nerd Font:style=Regular:size=11;2
 modules-left     = i3 xwindow
 modules-center   = date
-modules-right    = cpu memory battery pulseaudio
+modules-right    = cpu memory pulseaudio
 
 [module/i3]
 type                        = internal/i3
@@ -381,16 +384,6 @@ type            = internal/memory
 interval        = 2
 label           = 󰍛 %percentage_used:2%%
 label-foreground = \${colors.mauve}
-
-[module/battery]
-type                        = internal/battery
-battery                     = BAT0
-adapter                     = AC
-label-charging              = 󰂄 %percentage%%
-label-discharging           = 󰁹 %percentage%%
-label-full                  = 󰁹 Full
-label-charging-foreground   = \${colors.green}
-label-discharging-foreground = \${colors.yellow}
 
 [module/pulseaudio]
 type                    = internal/pulseaudio
