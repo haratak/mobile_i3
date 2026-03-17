@@ -239,7 +239,7 @@ set \$surface1  #45475a
 set \$surface0  #313244
 set \$base      #1e1e2e
 
-set \$mod Mod4
+set \$mod Mod1
 set \$term alacritty
 set \$menu rofi -show drun
 
