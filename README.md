@@ -60,16 +60,16 @@ Open **Termux-X11 app** after running `start-i3.sh` to see the desktop.
 
 | Key                       | Action                    |
 | ------------------------- | ------------------------- |
-| `Alt + Enter`             | Terminal                  |
-| `Alt + Space`             | Launcher (Rofi)           |
-| `Alt + Q`                 | Close window              |
-| `Alt + H/J/K/L`           | Focus left/down/up/right  |
-| `Alt + Shift + H/J/K/L`   | Move window               |
-| `Alt + 1–5`               | Switch workspace          |
-| `Alt + F`                 | Fullscreen                |
-| `Alt + R`                 | Resize mode               |
-| `Alt + B/V`               | Split horizontal/vertical |
-| `Alt + Shift + C`         | Reload config             |
+| `Ctrl+Alt + Enter`             | Terminal                  |
+| `Ctrl+Alt + Space`             | Launcher (Rofi)           |
+| `Ctrl+Alt + Q`                 | Close window              |
+| `Ctrl+Alt + H/J/K/L`           | Focus left/down/up/right  |
+| `Ctrl+Alt + Shift + H/J/K/L`   | Move window               |
+| `Ctrl+Alt + 1–5`               | Switch workspace          |
+| `Ctrl+Alt + F`                 | Fullscreen                |
+| `Ctrl+Alt + R`                 | Resize mode               |
+| `Ctrl+Alt + B/V`               | Split horizontal/vertical |
+| `Ctrl+Alt + Shift + C`         | Reload config             |
 
 ---
 

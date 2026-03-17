@@ -199,44 +199,44 @@ client.background       $base
 exec_always --no-startup-id polybar --reload main &
 exec_always --no-startup-id dunst
 
-bindsym $mod+Return       exec $term
-bindsym $mod+space        exec $menu
-bindsym $mod+q            kill
-bindsym $mod+Shift+c      reload
-bindsym $mod+Shift+r      restart
-bindsym $mod+Shift+e      exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'
+bindsym Ctrl+$mod+Return       exec $term
+bindsym Ctrl+$mod+space        exec $menu
+bindsym Ctrl+$mod+q            kill
+bindsym Ctrl+$mod+Shift+c      reload
+bindsym Ctrl+$mod+Shift+r      restart
+bindsym Ctrl+$mod+Shift+e      exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'
 
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym Ctrl+$mod+h focus left
+bindsym Ctrl+$mod+j focus down
+bindsym Ctrl+$mod+k focus up
+bindsym Ctrl+$mod+l focus right
+bindsym Ctrl+$mod+Shift+h move left
+bindsym Ctrl+$mod+Shift+j move down
+bindsym Ctrl+$mod+Shift+k move up
+bindsym Ctrl+$mod+Shift+l move right
 
-bindsym $mod+b split h
-bindsym $mod+v split v
-bindsym $mod+f fullscreen toggle
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+a focus parent
+bindsym Ctrl+$mod+b split h
+bindsym Ctrl+$mod+v split v
+bindsym Ctrl+$mod+f fullscreen toggle
+bindsym Ctrl+$mod+Shift+space floating toggle
+bindsym Ctrl+$mod+a focus parent
 
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym Ctrl+$mod+s layout stacking
+bindsym Ctrl+$mod+w layout tabbed
+bindsym Ctrl+$mod+e layout toggle split
 
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+Shift+1 move container to workspace number 1
-bindsym $mod+Shift+2 move container to workspace number 2
-bindsym $mod+Shift+3 move container to workspace number 3
-bindsym $mod+Shift+4 move container to workspace number 4
-bindsym $mod+Shift+5 move container to workspace number 5
+bindsym Ctrl+$mod+1 workspace number 1
+bindsym Ctrl+$mod+2 workspace number 2
+bindsym Ctrl+$mod+3 workspace number 3
+bindsym Ctrl+$mod+4 workspace number 4
+bindsym Ctrl+$mod+5 workspace number 5
+bindsym Ctrl+$mod+Shift+1 move container to workspace number 1
+bindsym Ctrl+$mod+Shift+2 move container to workspace number 2
+bindsym Ctrl+$mod+Shift+3 move container to workspace number 3
+bindsym Ctrl+$mod+Shift+4 move container to workspace number 4
+bindsym Ctrl+$mod+Shift+5 move container to workspace number 5
 
-bindsym $mod+r mode 'resize'
+bindsym Ctrl+$mod+r mode 'resize'
 mode 'resize' {
   bindsym h resize shrink width 10 px or 10 ppt
   bindsym j resize grow height 10 px or 10 ppt
@@ -489,14 +489,14 @@ echo -e "  ${BLUE}bash ~/start-i3.sh${RESET}      Start desktop"
 echo -e "  ${BLUE}bash ~/stop-i3.sh${RESET}       Stop"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Keybindings (i3wm):${RESET}"
-echo -e "  ${GRAY}Alt + Enter${RESET}              Terminal"
-echo -e "  ${GRAY}Alt + Space${RESET}              Launcher (Rofi)"
-echo -e "  ${GRAY}Alt + Q${RESET}                  Close window"
-echo -e "  ${GRAY}Alt + H/J/K/L${RESET}            Focus navigation"
-echo -e "  ${GRAY}Alt + Shift+H/J/K/L${RESET}      Move window"
-echo -e "  ${GRAY}Alt + 1-5${RESET}                Switch workspace"
-echo -e "  ${GRAY}Alt + F${RESET}                  Fullscreen"
-echo -e "  ${GRAY}Alt + R${RESET}                  Resize mode"
+echo -e "  ${GRAY}Ctrl+Alt + Enter${RESET}         Terminal"
+echo -e "  ${GRAY}Ctrl+Alt + Space${RESET}         Launcher (Rofi)"
+echo -e "  ${GRAY}Ctrl+Alt + Q${RESET}             Close window"
+echo -e "  ${GRAY}Ctrl+Alt + H/J/K/L${RESET}       Focus navigation"
+echo -e "  ${GRAY}Ctrl+Alt + Shift+H/J/K/L${RESET} Move window"
+echo -e "  ${GRAY}Ctrl+Alt + 1-5${RESET}           Switch workspace"
+echo -e "  ${GRAY}Ctrl+Alt + F${RESET}             Fullscreen"
+echo -e "  ${GRAY}Ctrl+Alt + R${RESET}             Resize mode"
 echo ""
 echo -e "  ${PINK}✦ i3wm on your Android. Enjoy!${RESET}"
 echo ""
