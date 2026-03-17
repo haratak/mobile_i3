@@ -96,7 +96,6 @@ if ! pkg list-installed 2>/dev/null | grep -q termux-x11; then
   echo ""
 fi
 
-read -p "  Press Enter to start installation... " _
 echo ""
 
 # ═══════════════════════════════════════════════════════════════
@@ -598,14 +597,7 @@ ok "LazyVim complete"
 # ═══════════════════════════════════════════════════════════════
 step "Configuring Git / dev environment"
 
-echo ""
-read -p "  Git username: " GIT_NAME
-read -p "  Git email: " GIT_EMAIL
-echo ""
-
 arch "
-  git config --global user.name        '${GIT_NAME}'
-  git config --global user.email       '${GIT_EMAIL}'
   git config --global core.pager       'delta'
   git config --global delta.navigate   true
   git config --global delta.line-numbers true
@@ -690,6 +682,10 @@ echo -e "  ${MAUVE}${BOLD}Usage:${RESET}"
 echo -e "  ${BLUE}bash ~/start-omarchy.sh${RESET}   Start desktop"
 echo -e "  ${BLUE}bash ~/omarchy-shell.sh${RESET}   Arch / Fish shell"
 echo -e "  ${BLUE}bash ~/stop-omarchy.sh${RESET}    Stop"
+echo ""
+echo -e "  ${MAUVE}${BOLD}Setup Git (run in Arch shell):${RESET}"
+echo -e "  ${GRAY}git config --global user.name  \"Your Name\"${RESET}"
+echo -e "  ${GRAY}git config --global user.email \"you@example.com\"${RESET}"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Keybindings (i3wm):${RESET}"
 echo -e "  ${GRAY}Super + Enter${RESET}            Terminal (Alacritty)"
