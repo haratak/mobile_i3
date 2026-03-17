@@ -1,8 +1,8 @@
-# termux-omarchy
+# mobile-i3
 
 > Beautiful, minimal dev environment on Android — no root required.
 
-Inspired by [DHH's Omarchy](https://omarchy.org), built for Android via Termux.
+Arch Linux + i3wm desktop on Android via Termux. No root required.
 
 **Arch Linux · i3wm · Neovim · Catppuccin Mocha**
 
@@ -54,12 +54,12 @@ Takes 20–40 minutes depending on connection speed.
 ## Usage
 
 ```bash
-bash ~/start-omarchy.sh    # Start desktop
-bash ~/omarchy-shell.sh    # Open Arch/Bash shell
-bash ~/stop-omarchy.sh     # Stop
+bash ~/start-i3.sh      # Start desktop
+bash ~/arch-shell.sh    # Open Arch/Bash shell
+bash ~/stop-i3.sh       # Stop
 ```
 
-Open **Termux-X11 app** after running `start-omarchy.sh` to see the desktop.
+Open **Termux-X11 app** after running `start-i3.sh` to see the desktop.
 
 ---
 

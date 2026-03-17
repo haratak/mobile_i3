@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ============================================================
-#   termux-omarchy
+#   mobile-i3
 #   Arch Linux + i3wm + Neovim + Catppuccin on Android
 #   No root required.
 # ============================================================
@@ -28,7 +28,7 @@ print_banner() {
   echo -e "${MAUVE}${BOLD}"
   echo '  ╔══════════════════════════════════════════════════════╗'
   echo '  ║                                                      ║'
-  echo '  ║    ✦  termux-omarchy                                 ║'
+  echo '  ║    ✦  mobile-i3                                      ║'
   echo '  ║                                                      ║'
   echo '  ║    Arch Linux · i3wm · Neovim · Catppuccin Mocha    ║'
   echo '  ║                                                      ║'
@@ -607,9 +607,9 @@ ok "Git config complete"
 # ═══════════════════════════════════════════════════════════════
 step "Generating launch scripts"
 
-cat > ~/start-omarchy.sh << 'STARTEOF'
+cat > ~/start-i3.sh << 'STARTEOF'
 #!/data/data/com.termux/files/usr/bin/bash
-echo "  ✦ Starting termux-omarchy..."
+echo "  ✦ Starting mobile-i3..."
 
 export XDG_RUNTIME_DIR="${TMPDIR}"
 
@@ -636,22 +636,22 @@ proot-distro login archlinux --shared-tmp -- bash -c "
   exec i3
 "
 STARTEOF
-chmod +x ~/start-omarchy.sh
+chmod +x ~/start-i3.sh
 
-cat > ~/stop-omarchy.sh << 'STOPEOF'
+cat > ~/stop-i3.sh << 'STOPEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 pkill -f "i3"         2>/dev/null || true
 pkill -f "termux-x11" 2>/dev/null || true
 pulseaudio --kill      2>/dev/null || true
-echo "  ✦ termux-omarchy stopped"
+echo "  ✦ mobile-i3 stopped"
 STOPEOF
-chmod +x ~/stop-omarchy.sh
+chmod +x ~/stop-i3.sh
 
-cat > ~/omarchy-shell.sh << 'SHELLEOF'
+cat > ~/arch-shell.sh << 'SHELLEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 exec proot-distro login archlinux --shared-tmp -- bash
 SHELLEOF
-chmod +x ~/omarchy-shell.sh
+chmod +x ~/arch-shell.sh
 
 ok "Launch scripts generated"
 
@@ -668,9 +668,9 @@ echo -e "  ${GREEN}${BOLD}✦ Installation complete! (${MINS}m ${SECS}s)${RESET}
 echo -e "${GRAY}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Usage:${RESET}"
-echo -e "  ${BLUE}bash ~/start-omarchy.sh${RESET}   Start desktop"
-echo -e "  ${BLUE}bash ~/omarchy-shell.sh${RESET}   Arch / Bash shell"
-echo -e "  ${BLUE}bash ~/stop-omarchy.sh${RESET}    Stop"
+echo -e "  ${BLUE}bash ~/start-i3.sh${RESET}   Start desktop"
+echo -e "  ${BLUE}bash ~/arch-shell.sh${RESET}   Arch / Bash shell"
+echo -e "  ${BLUE}bash ~/stop-i3.sh${RESET}    Stop"
 echo ""
 echo -e "  ${MAUVE}${BOLD}Setup Git (run in Arch shell):${RESET}"
 echo -e "  ${GRAY}git config --global user.name  \"Your Name\"${RESET}"
