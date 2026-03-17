@@ -67,7 +67,7 @@ arch() {
 }
 
 # Reset login shell to bash in case a previous run changed it to fish
-ARCH_PASSWD="$PREFIX/var/lib/proot-distro/installed-rootfs/archlinux/etc/passwd"
+ARCH_PASSWD="${PREFIX:-/data/data/com.termux/files/usr}/var/lib/proot-distro/installed-rootfs/archlinux/etc/passwd"
 if [ -f "$ARCH_PASSWD" ]; then
   sed -i 's|/usr/bin/fish|/bin/bash|g' "$ARCH_PASSWD"
 fi
