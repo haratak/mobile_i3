@@ -44,7 +44,7 @@ No desktop icons. No file manager. Just workspaces and your terminal.
 Open Termux and run:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/YOUR_USERNAME/termux-omarchy/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/haratak/mobile_i3/master/install.sh | bash
 ```
 
 Takes 20–40 minutes depending on connection speed.

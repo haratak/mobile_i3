@@ -61,51 +61,51 @@ info() { echo -e "  ${BLUE}→${RESET} $1"; }
 warn() { echo -e "  ${YELLOW}⚠${RESET} $1"; }
 fail() { echo -e "\n  ${RED}✗ ERROR: $1${RESET}\n"; exit 1; }
 
-# proot内でArchコマンドを実行するヘルパー
+# Helper to run commands inside Arch via proot
 arch() {
   proot-distro login archlinux -- bash -c "$1"
 }
 
 # ── Preflight ─────────────────────────────────────────────────
 print_banner
-echo -e "  ${GRAY}インストール内容:${RESET}"
+echo -e "  ${GRAY}Components to install:${RESET}"
 echo ""
 echo -e "  ${MAUVE}・${RESET} Arch Linux          (proot-distro)"
-echo -e "  ${MAUVE}・${RESET} i3wm                (タイリングWM / X11)"
-echo -e "  ${MAUVE}・${RESET} Polybar             (ステータスバー)"
-echo -e "  ${MAUVE}・${RESET} Rofi                (アプリランチャー)"
-echo -e "  ${MAUVE}・${RESET} Alacritty           (ターミナル)"
-echo -e "  ${MAUVE}・${RESET} Neovim + LazyVim    (エディタ)"
-echo -e "  ${MAUVE}・${RESET} Fish + Starship      (シェル)"
-echo -e "  ${MAUVE}・${RESET} Catppuccin Mocha     (テーマ統一)"
-echo -e "  ${MAUVE}・${RESET} Git, Node, Python, Go, Rust (開発ツール)"
+echo -e "  ${MAUVE}・${RESET} i3wm                (tiling WM / X11)"
+echo -e "  ${MAUVE}・${RESET} Polybar             (status bar)"
+echo -e "  ${MAUVE}・${RESET} Rofi                (app launcher)"
+echo -e "  ${MAUVE}・${RESET} Alacritty           (terminal)"
+echo -e "  ${MAUVE}・${RESET} Neovim + LazyVim    (editor)"
+echo -e "  ${MAUVE}・${RESET} Fish + Starship      (shell)"
+echo -e "  ${MAUVE}・${RESET} Catppuccin Mocha     (unified theme)"
+echo -e "  ${MAUVE}・${RESET} Git, Node, Python, Go, Rust (dev tools)"
 echo ""
-echo -e "  ${GRAY}必要空き容量: 約5GB  /  目安時間: 20〜40分${RESET}"
+echo -e "  ${GRAY}Required space: ~5GB  /  Estimated time: 20-40 min${RESET}"
 echo ""
 
-# Termux-X11 チェック
+# Termux-X11 check
 if ! pkg list-installed 2>/dev/null | grep -q termux-x11; then
-  warn "Termux-X11 が未インストールです"
-  warn "https://github.com/termux/termux-x11/releases からAPKをインストールしてください"
+  warn "Termux-X11 is not installed"
+  warn "Please install the APK from https://github.com/termux/termux-x11/releases"
   echo ""
 fi
 
-read -p "  Enterキーでインストール開始... " _
+read -p "  Press Enter to start installation... " _
 echo ""
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 1 — Termux パッケージ更新
+# STEP 1 — Update Termux packages
 # ═══════════════════════════════════════════════════════════════
-step "Termux パッケージを更新中"
+step "Updating Termux packages"
 
 pkg update -y -o Dpkg::Options::="--force-confnew" 2>/dev/null
 pkg upgrade -y -o Dpkg::Options::="--force-confnew" 2>/dev/null
-ok "Termux 更新完了"
+ok "Termux update complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 2 — Termux 必須パッケージ
+# STEP 2 — Termux essential packages
 # ═══════════════════════════════════════════════════════════════
-step "Termux 必須パッケージをインストール中"
+step "Installing Termux essential packages"
 
 pkg install -y \
   proot-distro \
@@ -113,24 +113,24 @@ pkg install -y \
   termux-x11-nightly \
   pulseaudio \
   wget curl git
-ok "必須パッケージ完了"
+ok "Essential packages complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 3 — Arch Linux インストール
+# STEP 3 — Install Arch Linux
 # ═══════════════════════════════════════════════════════════════
-step "Arch Linux をインストール中 (proot-distro)"
+step "Installing Arch Linux (proot-distro)"
 
 if proot-distro list 2>/dev/null | grep -q "archlinux.*installed"; then
-  info "Arch Linux はすでにインストール済みです"
+  info "Arch Linux is already installed"
 else
   proot-distro install archlinux
-  ok "Arch Linux インストール完了"
+  ok "Arch Linux installation complete"
 fi
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 4 — Arch 初期化 + X11/i3 パッケージ
+# STEP 4 — Arch init + X11/i3 packages
 # ═══════════════════════════════════════════════════════════════
-step "X11 環境と i3wm をインストール中"
+step "Installing X11 environment and i3wm"
 
 arch "
   pacman-key --init 2>/dev/null || true
@@ -158,12 +158,12 @@ arch "
     autorandr \
     dbus
 "
-ok "X11 + i3wm インストール完了"
+ok "X11 + i3wm installation complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 5 — GUIアプリ
+# STEP 5 — GUI applications
 # ═══════════════════════════════════════════════════════════════
-step "GUIアプリをインストール中"
+step "Installing GUI applications"
 
 arch "
   pacman -S --noconfirm --needed \
@@ -178,12 +178,12 @@ arch "
     ttf-jetbrains-mono-nerd \
     ttf-nerd-fonts-symbols
 "
-ok "GUIアプリ完了"
+ok "GUI applications complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 6 — 開発ツール
+# STEP 6 — Dev tools
 # ═══════════════════════════════════════════════════════════════
-step "開発ツールをインストール中"
+step "Installing dev tools"
 
 arch "
   pacman -S --noconfirm --needed \
@@ -211,12 +211,12 @@ arch "
     go \
     rustup
 "
-ok "開発ツール完了"
+ok "Dev tools complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 7 — Catppuccin テーマ適用
+# STEP 7 — Apply Catppuccin theme
 # ═══════════════════════════════════════════════════════════════
-step "Catppuccin Mocha テーマを適用中"
+step "Applying Catppuccin Mocha theme"
 
 arch "
 mkdir -p \
@@ -574,12 +574,12 @@ set -g  mode-keys          vi
 TMUXEOF
 "
 
-ok "テーマ適用完了"
+ok "Theme applied"
 
 # ═══════════════════════════════════════════════════════════════
 # STEP 8 — LazyVim
 # ═══════════════════════════════════════════════════════════════
-step "Neovim + LazyVim をインストール中"
+step "Installing Neovim + LazyVim"
 
 arch "
   rm -rf /root/.config/nvim /root/.local/share/nvim /root/.local/state/nvim /root/.cache/nvim
@@ -588,16 +588,16 @@ arch "
   nvim --headless '+Lazy! sync' +qa 2>/dev/null || true
 "
 
-ok "LazyVim 完了"
+ok "LazyVim complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 9 — Git 設定
+# STEP 9 — Git config
 # ═══════════════════════════════════════════════════════════════
-step "Git / 開発環境を設定中"
+step "Configuring Git / dev environment"
 
 echo ""
-read -p "  Git ユーザー名: " GIT_NAME
-read -p "  Git メールアドレス: " GIT_EMAIL
+read -p "  Git username: " GIT_NAME
+read -p "  Git email: " GIT_EMAIL
 echo ""
 
 arch "
@@ -613,32 +613,32 @@ arch "
   git config --global alias.lg  'log --oneline --graph --decorate'
 "
 
-ok "Git 設定完了"
+ok "Git config complete"
 
 # ═══════════════════════════════════════════════════════════════
-# STEP 10 — 起動スクリプト生成
+# STEP 10 — Generate launch scripts
 # ═══════════════════════════════════════════════════════════════
-step "起動スクリプトを生成中"
+step "Generating launch scripts"
 
 cat > ~/start-omarchy.sh << 'STARTEOF'
 #!/data/data/com.termux/files/usr/bin/bash
-echo "  ✦ termux-omarchy を起動中..."
+echo "  ✦ Starting termux-omarchy..."
 
 export XDG_RUNTIME_DIR="${TMPDIR}"
 
-# PulseAudio (音声)
+# PulseAudio (audio)
 pulseaudio --start \
   --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" \
   --exit-idle-time=-1 2>/dev/null || true
 
-# Termux-X11 起動
+# Start Termux-X11
 termux-x11 :1 -xstartup "" &
 sleep 2
 
-echo "  → Termux-X11 アプリを開いてください"
+echo "  → Please open the Termux-X11 app"
 echo ""
 
-# proot 内で i3 を起動 (--shared-tmp でWaylandソケットを共有)
+# Start i3 inside proot (--shared-tmp shares Wayland socket)
 DISPLAY=:1 \
 PULSE_SERVER=127.0.0.1 \
 proot-distro login archlinux --shared-tmp -- bash -c "
@@ -656,7 +656,7 @@ cat > ~/stop-omarchy.sh << 'STOPEOF'
 pkill -f "i3"         2>/dev/null || true
 pkill -f "termux-x11" 2>/dev/null || true
 pulseaudio --kill      2>/dev/null || true
-echo "  ✦ termux-omarchy を停止しました"
+echo "  ✦ termux-omarchy stopped"
 STOPEOF
 chmod +x ~/stop-omarchy.sh
 
@@ -666,10 +666,10 @@ exec proot-distro login archlinux --shared-tmp -- fish
 SHELLEOF
 chmod +x ~/omarchy-shell.sh
 
-ok "起動スクリプト生成完了"
+ok "Launch scripts generated"
 
 # ═══════════════════════════════════════════════════════════════
-# 完了
+# Done
 # ═══════════════════════════════════════════════════════════════
 ELAPSED=$(( $(date +%s) - START_TIME ))
 MINS=$(( ELAPSED / 60 ))
@@ -677,23 +677,23 @@ SECS=$(( ELAPSED % 60 ))
 
 print_banner
 echo -e "${GRAY}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "  ${GREEN}${BOLD}✦ インストール完了！ (${MINS}分 ${SECS}秒)${RESET}"
+echo -e "  ${GREEN}${BOLD}✦ Installation complete! (${MINS}m ${SECS}s)${RESET}"
 echo -e "${GRAY}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
-echo -e "  ${MAUVE}${BOLD}使い方:${RESET}"
-echo -e "  ${BLUE}bash ~/start-omarchy.sh${RESET}   デスクトップ起動"
-echo -e "  ${BLUE}bash ~/omarchy-shell.sh${RESET}   Arch / Fish シェル"
-echo -e "  ${BLUE}bash ~/stop-omarchy.sh${RESET}    停止"
+echo -e "  ${MAUVE}${BOLD}Usage:${RESET}"
+echo -e "  ${BLUE}bash ~/start-omarchy.sh${RESET}   Start desktop"
+echo -e "  ${BLUE}bash ~/omarchy-shell.sh${RESET}   Arch / Fish shell"
+echo -e "  ${BLUE}bash ~/stop-omarchy.sh${RESET}    Stop"
 echo ""
-echo -e "  ${MAUVE}${BOLD}キーバインド (i3wm):${RESET}"
-echo -e "  ${GRAY}Super + Enter${RESET}            ターミナル (Alacritty)"
-echo -e "  ${GRAY}Super + Space${RESET}            ランチャー (Rofi)"
-echo -e "  ${GRAY}Super + Q${RESET}                ウィンドウを閉じる"
-echo -e "  ${GRAY}Super + H/J/K/L${RESET}          フォーカス移動"
-echo -e "  ${GRAY}Super + Shift+H/J/K/L${RESET}    ウィンドウ移動"
-echo -e "  ${GRAY}Super + 1〜5${RESET}              ワークスペース切替"
-echo -e "  ${GRAY}Super + F${RESET}                フルスクリーン"
-echo -e "  ${GRAY}Super + R${RESET}                リサイズモード"
+echo -e "  ${MAUVE}${BOLD}Keybindings (i3wm):${RESET}"
+echo -e "  ${GRAY}Super + Enter${RESET}            Terminal (Alacritty)"
+echo -e "  ${GRAY}Super + Space${RESET}            Launcher (Rofi)"
+echo -e "  ${GRAY}Super + Q${RESET}                Close window"
+echo -e "  ${GRAY}Super + H/J/K/L${RESET}          Focus navigation"
+echo -e "  ${GRAY}Super + Shift+H/J/K/L${RESET}    Move window"
+echo -e "  ${GRAY}Super + 1-5${RESET}              Switch workspace"
+echo -e "  ${GRAY}Super + F${RESET}                Fullscreen"
+echo -e "  ${GRAY}Super + R${RESET}                Resize mode"
 echo ""
 echo -e "  ${PINK}✦ Beautiful Arch Linux on your Android. Enjoy!${RESET}"
 echo ""
