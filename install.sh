@@ -123,7 +123,7 @@ ok "Essential packages complete"
 # ═══════════════════════════════════════════════════════════════
 step "Installing Arch Linux (proot-distro)"
 
-if proot-distro list 2>/dev/null | grep -q "archlinux.*installed"; then
+if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/archlinux" ]; then
   info "Arch Linux is already installed"
 else
   proot-distro install archlinux
