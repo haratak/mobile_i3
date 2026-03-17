@@ -110,9 +110,12 @@ step "Installing Termux essential packages"
 pkg install -y \
   proot-distro \
   x11-repo \
-  termux-x11-nightly \
   pulseaudio \
   wget curl git
+ok "Base packages complete"
+
+# x11-repo must be added before termux-x11-nightly is available
+pkg install -y termux-x11-nightly
 ok "Essential packages complete"
 
 # ═══════════════════════════════════════════════════════════════
