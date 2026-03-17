@@ -107,6 +107,7 @@ pkg install -y \
   rofi \
   dunst \
   feh \
+  xterm \
   xorg-xrandr \
   xclip \
   dbus
