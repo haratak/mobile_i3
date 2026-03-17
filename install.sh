@@ -632,6 +632,11 @@ proot-distro login archlinux --shared-tmp -- bash -c "
   export DISPLAY=:1
   export PULSE_SERVER=127.0.0.1
   export XDG_RUNTIME_DIR=/tmp
+  # Auto-detect and set screen resolution
+  SCREEN_RES=\$(xrandr 2>/dev/null | grep ' connected' | grep -oP '\\d+x\\d+' | head -1)
+  if [ -n \"\$SCREEN_RES\" ]; then
+    xrandr --output \$(xrandr | grep ' connected' | awk '{print \$1}') --mode \"\$SCREEN_RES\" 2>/dev/null || true
+  fi
   eval \$(dbus-launch --sh-syntax 2>/dev/null) || true
   exec i3
 "
