@@ -519,8 +519,6 @@ if status is-interactive
 end
 FISHEOF
 
-chsh -s /usr/bin/fish root 2>/dev/null || true
-
 # ── Starship ──────────────────────────────────────────────────
 cat > /root/.config/starship.toml << 'SSEOF'
 format = \"\$username\$directory\$git_branch\$git_status\$cmd_duration\$line_break\$character\"
@@ -617,6 +615,9 @@ arch "
 "
 
 ok "Git config complete"
+
+# Set fish as default shell (must be after all arch() calls)
+arch "chsh -s /usr/bin/fish root 2>/dev/null || true"
 
 # ═══════════════════════════════════════════════════════════════
 # STEP 10 — Generate launch scripts
