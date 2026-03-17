@@ -18,7 +18,7 @@ Inspired by [DHH's Omarchy](https://omarchy.org), built for Android via Termux.
 | Launcher       | Rofi                           |
 | Terminal       | Alacritty                      |
 | Editor         | Neovim + LazyVim               |
-| Shell          | Fish + Starship                |
+| Shell          | Bash + Starship                |
 | Theme          | Catppuccin Mocha (unified)     |
 | Notifications  | dunst                          |
 | Compositor     | picom                          |
@@ -55,7 +55,7 @@ Takes 20–40 minutes depending on connection speed.
 
 ```bash
 bash ~/start-omarchy.sh    # Start desktop
-bash ~/omarchy-shell.sh    # Open Arch/Fish shell
+bash ~/omarchy-shell.sh    # Open Arch/Bash shell
 bash ~/stop-omarchy.sh     # Stop
 ```
 
